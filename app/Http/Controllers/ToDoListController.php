@@ -9,6 +9,20 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ToDoListController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        try
+        {
+            $todos = ToDoList::all();
+        }
+        catch (Exception $e) {
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
+        return response()->json($todos, 200);
+    }
    
     /**
      * Show the form for creating a new resource.
@@ -20,11 +34,14 @@ class ToDoListController extends Controller
             'isCompleted' => 'nullable|boolean'
         ]);
 
-        try{
+        try
+        {
             $todo = ToDoList::create($validatedData);
 
             return response()->json($todo, 201);
-        }catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             return response()->json(['error' => 'Something went wrong'], 500);
         }
 
@@ -35,13 +52,20 @@ class ToDoListController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        try {
+        try
+        {
             $todo = ToDoList::findOrFail($id);
-        } catch (ModelNotFoundException $e) {
+        }
+        catch (ModelNotFoundException $e)
+        {
             return response()->json(['error' => 'Todo not found'], 404);
-        } catch (NotFoundHttpException $e) {
+        }
+        catch (NotFoundHttpException $e)
+        {
             return response()->json(['error' => 'Todo not found'], 404);
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             return response()->json(['error' => 'Something went wrong'], 500);
         }
 
@@ -50,6 +74,7 @@ class ToDoListController extends Controller
             'isCompleted' => 'nullable|boolean'
         ]);
         $todo->update($validatedData);
+
         return response()->json($todo, 200);
     }
 
@@ -58,16 +83,25 @@ class ToDoListController extends Controller
      */
     public function destroy(string $id)
     {
-        try {
+        try
+        {
             $todo = ToDoList::findOrFail($id);
-        } catch (ModelNotFoundException $e) {
+        }
+        catch (ModelNotFoundException $e)
+        {
             return response()->json(['error' => 'Todo not found'], 404);
-        } catch (NotFoundHttpException $e) {
+        }
+        catch (NotFoundHttpException $e)
+        {
             return response()->json(['error' => 'Todo not found'], 404);
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             return response()->json(['error' => 'Something went wrong'], 500);
         }
+
         $todo->delete();
+        
         return response()->json(null, 204);
     }
 }
