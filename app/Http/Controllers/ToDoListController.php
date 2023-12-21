@@ -30,7 +30,7 @@ class ToDoListController extends Controller
     public function store(Request $request)
     {   
         $validatedData = $request->validate([
-            'todo' => 'required|string',
+            'todo' => 'required|string|unique:to_do_lists',
             'isCompleted' => 'nullable|boolean'
         ]);
 
