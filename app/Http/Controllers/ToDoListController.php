@@ -16,7 +16,8 @@ class ToDoListController extends Controller
     {
         try
         {
-            $todos = ToDoList::all();
+            // sort by create at
+            $todos = ToDoList::orderBy('created_at', 'asc')->get();
         }
         catch (Exception $e) {
             return response()->json(['error' => 'Something went wrong'], 500);
@@ -69,10 +70,21 @@ class ToDoListController extends Controller
             return response()->json(['error' => 'Something went wrong'], 500);
         }
 
-        $validatedData = $request->validate([
-            'todo' => 'required|string',
-            'isCompleted' => 'nullable|boolean'
-        ]);
+        // Check if the request has the key updateStatus
+        if ($request->has('updateStatus'))
+        {
+            $validatedData = $request->validate([
+                'isCompleted' => 'nullable|boolean'
+            ]);
+        }
+        else
+        {
+            $validatedData = $request->validate([
+                'todo' => 'required|string|unique:to_do_lists',
+                'isCompleted' => 'nullable|boolean'
+            ]);
+        }
+        
         $todo->update($validatedData);
 
         return response()->json($todo, 200);
