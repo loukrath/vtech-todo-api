@@ -12,12 +12,14 @@ class ToDoListController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try
         {
-            // sort by create at
-            $todos = ToDoList::orderBy('created_at', 'asc')->get();
+            $keyword = $request->query('keyword', '');
+            $todos = ToDoList::where('todo', 'LIKE', "%{$keyword}%")
+                                ->orderBy('created_at', 'asc')
+                                ->get();
         }
         catch (Exception $e) {
             return response()->json(['error' => 'Something went wrong'], 500);
